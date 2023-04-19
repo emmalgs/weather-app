@@ -3,17 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/styles.css';
 import WeatherService from './weather-service';
 
-// Business Logic
-
-async function getWeather(city) {
-  const response = await WeatherService.getWeather(city);
-  if (response.main) {
-    printElements(response);
-  } else {
-    printError(response, city)
-  }
-}
-
 // UI Logic
 
 function printElements(response, city) {
@@ -30,7 +19,14 @@ function handleFormSubmission(event) {
   event.preventDefault();
   const city = document.querySelector('#location').value;
   document.querySelector('#location').value = null;
-  getWeather(city);
+  (async function() {
+    const response = await WeatherService.getWeather(city);
+    if (response.main) {
+      printElements(response, city);
+    } else {
+      printError(response, city);
+    }
+  })();
 }
 
 window.addEventListener("load", function() {
